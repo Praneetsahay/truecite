@@ -1,0 +1,218 @@
+@import "tailwindcss";
+
+/*
+  TrueCite design tokens.
+  Colors carry meaning, so each has one job. The default Tailwind palette,
+  shadows and large radii are removed on purpose: use only these tokens.
+*/
+@theme {
+  --color-*: initial;
+  --color-paper: #f7f4ec; /* page background: a soft cream */
+  --color-sheet: #fcfaf5; /* documents under review: AI answers, reports, inputs */
+  --color-ink: #1e2b37; /* text and headings */
+  --color-graphite: #66717b; /* secondary text */
+  --color-correction: #c2382f; /* incorrect statements only */
+  --color-verified: #2e7a57; /* correct statements and resolved issues */
+  --color-highlighter: #f0dd72; /* needs review, or appears only sometimes */
+  --color-rule: rgb(102 113 123 / 0.24); /* hairlines, table rows */
+  --color-rule-strong: rgb(102 113 123 / 0.5); /* input borders, table heads */
+  --color-wash: rgb(30 43 55 / 0.045); /* hover and selected backgrounds */
+  --color-transparent: transparent;
+  --color-current: currentColor;
+
+  --shadow-*: initial;
+  --inset-shadow-*: initial;
+  --drop-shadow-*: initial;
+
+  --radius-*: initial;
+  --radius-xs: 2px;
+  --radius-sm: 3px;
+  --radius-md: 4px;
+
+  --text-*: initial;
+  --text-xs: 0.75rem; /* 12 */
+  --text-xs--line-height: 1rem;
+  --text-sm: 0.8125rem; /* 13: meta, captions */
+  --text-sm--line-height: 1.25rem;
+  --text-md: 0.875rem; /* 14: tables */
+  --text-md--line-height: 1.375rem;
+  --text-base: 0.9375rem; /* 15: interface */
+  --text-base--line-height: 1.5rem;
+  --text-lg: 1.0625rem; /* 17 */
+  --text-lg--line-height: 1.625rem;
+  --text-xl: 1.25rem; /* 20 */
+  --text-xl--line-height: 1.75rem;
+  --text-2xl: 1.5rem; /* 24: page titles */
+  --text-2xl--line-height: 2rem;
+  --text-3xl: 2rem; /* 32 */
+  --text-3xl--line-height: 2.375rem;
+  --text-4xl: 2.75rem; /* 44 */
+  --text-4xl--line-height: 3.125rem;
+  --text-5xl: 3.5rem; /* 56: score figures */
+  --text-5xl--line-height: 1;
+
+  --ease-editor: cubic-bezier(0.65, 0, 0.25, 1);
+}
+
+@theme inline {
+  --font-sans: var(--font-schibsted), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-newsreader), ui-serif, Georgia, serif;
+}
+
+@layer base {
+  html {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    min-height: 100dvh;
+    background-color: var(--color-paper);
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    line-height: var(--text-base--line-height);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  a {
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 2px;
+    border-radius: var(--radius-xs);
+  }
+
+  ::selection {
+    background-color: var(--color-highlighter);
+    color: var(--color-ink);
+  }
+
+  input,
+  select,
+  textarea,
+  button {
+    font: inherit;
+    color: inherit;
+  }
+
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  hr {
+    border-color: var(--color-rule);
+  }
+
+  /* Browsers set list numbers in tabular figures, which look spaced out in this face. */
+  ::marker {
+    font-variant-numeric: normal;
+  }
+}
+
+@layer components {
+  /*
+    Numbers in columns and scores. Schibsted Grotesk's tabular figures give
+    commas and periods a full figure width ("₹35 , 000"), so lining
+    proportional figures are used; right-aligned columns still line up.
+  */
+  .figures {
+    font-variant-numeric: lining-nums proportional-nums;
+  }
+
+  /*
+    The correction mark: a wrong statement struck through in correction red.
+    A background line is used instead of text-decoration so the same mark can
+    be drawn once on the landing page.
+  */
+  .strike {
+    text-decoration: none;
+    background-image: linear-gradient(var(--color-correction), var(--color-correction));
+    background-repeat: no-repeat;
+    background-position: 0 58%;
+    background-size: 100% 2px;
+  }
+
+  .strike-draw {
+    animation: strike-draw 720ms var(--ease-editor) 650ms both;
+  }
+
+  /* Statements that need review or appear only in some runs. */
+  .highlight {
+    background-color: var(--color-highlighter);
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+    padding: 0 0.12em;
+    border-radius: var(--radius-xs);
+  }
+
+  /* Native select with a quiet chevron. */
+  .select-chevron {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='%2366717b' stroke-width='1.5'%3E%3Cpath d='M3 4.5 6 7.5 9 4.5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 12px 12px;
+    padding-right: 2.25rem;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+}
+
+@keyframes strike-draw {
+  from {
+    background-size: 0% 2px;
+  }
+  to {
+    background-size: 100% 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media print {
+  html,
+  body {
+    background: #ffffff;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+}
